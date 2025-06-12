@@ -34,7 +34,7 @@ export default function WelcomeScreen() {
     // Navigate to login after animation completes
     const timer = setTimeout(() => {
       router.replace('/login');
-    }, 5000);
+    }, 10000);
 
 
     return () => clearTimeout(timer);
@@ -63,7 +63,7 @@ export default function WelcomeScreen() {
             <View style={styles.logoBackground }>
               {/* <Leaf size={80} color="#FFFFFF" strokeWidth={2.5} /> */}
               <Image
-                source={require('../assets/images/favicon.png')}
+                source={require('../assets/images/logo.png')}
                 style={{ width: 80, height: 80 }}
                 resizeMode="contain"
                 />
