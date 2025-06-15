@@ -6,11 +6,19 @@ import {
   EduNSWACTFoundation_400Regular,
   EduNSWACTFoundation_700Bold,
 } from '@expo-google-fonts/edu-nsw-act-foundation';
+import { router } from 'expo-router';
 
 import { useFonts } from '@expo-google-fonts/inter-tight/useFonts';
 import { InterTight_400Regular } from '@expo-google-fonts/inter-tight/400Regular';
 
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { Link } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+
+// If using a stack navigator, import the correct type from your navigation setup
+import type { StackNavigationProp } from '@react-navigation/stack';
+ // Adjust path and type name as needed
+
 
 
 
@@ -22,9 +30,22 @@ const images = [
   require('../assets/images/Intro/image3.png'),
 ];
 
+
+
 const Login = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
+  const navigation = useNavigation();
+
+//   const goTo = (screen: string) => {
+//   navigation.navigate(screen);
+// };
+  const goTo = (screen: string) => {
+    setTimeout(() => {
+      
+      router.replace('/getStarted');
+    }, 10);
+  };
 
   let [fontsLoaded] = useFonts({
     EduNSWACTFoundation_400Regular,
@@ -97,9 +118,11 @@ const subdescriptions = [
           />
         ))}
       </View>
-
+<View style={{height: height * 0.7, backgroundColor:"none" }}>
       {/* Swipeable Images */}
-      <FlatList style={{ height: height * 0.5 }}
+      <View style={{ height: height * scale(0.4), backgroundColor: "none"  , marginBottom:scale(1)}}>
+
+        <FlatList 
         ref={flatListRef}
         horizontal
         pagingEnabled
@@ -111,7 +134,11 @@ const subdescriptions = [
           <Image source={item} style={styles.image} resizeMode="cover" />
         )}
       />
-      <View style={{ height: height * 0.2,backgroundColor:"none" , marginTop: scale(10)}}> 
+
+      </View>
+      
+
+      <View style={{ height: height * scale(0.15),backgroundColor:"none" , marginTop: scale(10)}}> 
         <Text style={{ textAlign: 'center', fontFamily: 'EduNSWACTFoundation_700Bold', fontSize: scale(24)
 ,}}>
           {descriptions[currentIndex]}
@@ -125,13 +152,16 @@ const subdescriptions = [
        
       </View>
 
+
+</View>
+
       {/* Bottom Buttons */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Create an account</Text>
+          <Text style={styles.buttonText}  onPress={() => goTo("signup")}>Create an account</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.button, styles.outlined]}>
-          <Text style={[styles.buttonText, { color: '#00ac47' }]}>Log into an existing account</Text>
+          <Text style={[styles.buttonText, { color: '#00ac47' }]} > Log into an existing account</Text>
         </TouchableOpacity>
         <Text style={{ fontFamily: 'EduNSWACTFoundation_400Regular', fontSize: scale(14), color: '#666' , alignItems: 'center', marginTop: 0, textAlign: 'center'}}>
           By continuing, you agree to our <Text style={{color:"#00ac47"}}>Terms and conditions</Text> of Services.
@@ -168,15 +198,17 @@ const styles = StyleSheet.create({
     height: 5,
     borderRadius: 3,
   },
+
   image: {
     width: width,
-    height: 300, // or adjust based on your design
-    borderRadius: 5,
-    borderColor: "#d7d7d7",
-    borderWidth: 2,
+    height: scale(300), // or adjust based on your design
+    borderRadius: scale(50),
+    borderColor: "#ffffff",
+    borderWidth: scale(20),
     borderBottomWidth: 0,
-    marginTop: 20,
+    marginTop: scale(20),
 },
+
 
   buttonContainer: {
     paddingHorizontal: 20,

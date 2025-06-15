@@ -39,6 +39,10 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="login" />
+        <Stack.Screen name="location" />
+        <Stack.Screen name="getStarted" />
+        <Stack.Screen name="setupProfile" />
+        <Stack.Screen name="getVerified" />
         {/* <Stack.Screen name="(tabs)" /> */}
         {/* <Stack.Screen name="+not-found" /> */}
       </Stack>

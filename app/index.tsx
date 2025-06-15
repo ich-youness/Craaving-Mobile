@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 // import { Leaf } from 'lucide-react-native';
 import Animated, {
   useSharedValue,
@@ -34,7 +35,7 @@ export default function WelcomeScreen() {
     // Navigate to login after animation completes
     const timer = setTimeout(() => {
       router.replace('/login');
-    }, 10000);
+    }, 100);//10000
 
 
     return () => clearTimeout(timer);
@@ -64,7 +65,7 @@ export default function WelcomeScreen() {
               {/* <Leaf size={80} color="#FFFFFF" strokeWidth={2.5} /> */}
               <Image
                 source={require('../assets/images/logo.png')}
-                style={{ width: 80, height: 80 }}
+                style={{ width: scale(80), height: scale(80) }}
                 resizeMode="contain"
                 />
                 <Text style={styles.title}>Craaving</Text>
