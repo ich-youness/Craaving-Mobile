@@ -1,249 +1,175 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  ScrollView, 
+  Image, 
+  Dimensions,
+  TouchableOpacity 
+} from 'react-native';
+import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-// import { useFonts } from '@expo-google-fonts/edu-nsw-act-foundation' ;
-import {
-  EduNSWACTFoundation_400Regular,
-  EduNSWACTFoundation_700Bold,
-} from '@expo-google-fonts/edu-nsw-act-foundation';
-import { router } from 'expo-router';
+import ProgressBar from '@/components/ProgressBar';
+import CustomButton from '@/components/CustomButton';
+import { Colors } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
+import { scale, verticalScale } from 'react-native-size-matters';
 
-import { useFonts } from '@expo-google-fonts/inter-tight/useFonts';
-import { InterTight_400Regular } from '@expo-google-fonts/inter-tight/400Regular';
+const { width } = Dimensions.get('window');
 
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
-import { Link } from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
-
-// If using a stack navigator, import the correct type from your navigation setup
-import type { StackNavigationProp } from '@react-navigation/stack';
- // Adjust path and type name as needed
-
-
-
-
-const { width , height} = Dimensions.get('window');
-
-const images = [
-  require('../assets/images/Intro/image1.png'),
-  require('../assets/images/Intro/image2.png'),
-  require('../assets/images/Intro/image3.png'),
+const onboardingData = [
+  {
+    id: 1,
+    image: 'https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&w=400',
+  },
+  {
+    id: 2,
+    image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400',
+  },
+  {
+    id: 3,
+    image: 'https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg?auto=compress&cs=tinysrgb&w=400',
+  },
 ];
 
+export default function LoginScreen() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const router = useRouter();
 
-
-const Login = () => {
-const [currentIndex, setCurrentIndex] = useState(0);
-  const flatListRef = useRef(null);
-  const navigation = useNavigation();
-
-//   const goTo = (screen: string) => {
-//   navigation.navigate(screen);
-// };
-  const goTo = (screen: string) => {
-    setTimeout(() => {
-      
-      router.replace('/getStarted');
-    }, 10);
+  const handleScroll = (event: any) => {
+    const scrollPosition = event.nativeEvent.contentOffset.x;
+    const index = Math.round(scrollPosition / width);
+    setCurrentIndex(index);
   };
 
-  let [fontsLoaded] = useFonts({
-    EduNSWACTFoundation_400Regular,
-    EduNSWACTFoundation_700Bold,
-  });
-
-  if (!fontsLoaded) return null;
-
-  const onScroll = (event: import('react-native').NativeSyntheticEvent<import('react-native').NativeScrollEvent>) => {
-    const slideIndex = Math.round(event.nativeEvent.contentOffset.x / width);
-    setCurrentIndex(slideIndex);
+  const handleCreateAccount = () => {
+    router.push('/getStarted');
   };
-  const scaleFontSize = (size: number) => {
-  const { width } = Dimensions.get('window');
-  // Base width of 375 is iPhone 11/12/13
-  const baseWidth = 375;
-  return size * (width / baseWidth);
-};
 
-
-const descriptions = [
-  (
-    <Text style={styles.heading}>
-      Find Your New <Text style={styles.highlight}>Favorite Food</Text> Spot!
-    </Text>
-  ),
-  (
-    <Text style={styles.heading}>
-      Experience a new <Text style={styles.highlight}>platform to sell your</Text>  tasty meals
-    </Text>
-  ),
-  (
-    <Text style={styles.heading}>
-      Connect, Deliver & <Text style={styles.highlight}>Earn!</Text>
-    </Text>
-  ),
-];
-
-const subdescriptions = [
-  (
-     <Text style={{ textAlign: 'center', fontFamily: 'EduNSWACTFoundation_400Regular', fontSize: scale(16),}}>
-          From Popular Eateries To Hidden Gems
-      </Text>
-  ),
-  (
-    <Text style={{ textAlign: 'center', fontFamily: 'EduNSWACTFoundation_400Regular', fontSize: scale(16),}}>
-      Create & Own a market for your delicious meals
-    </Text>
-  ),
-  (
-    <Text style={{ textAlign: 'center', fontFamily: 'EduNSWACTFoundation_400Regular', fontSize: scale(16),}}>
-      Become a delivery partner to our sellers by ensuring speedy delivery to buyers
-    </Text>
-  ),
-];
-
-
+  const handleLogin = () => {
+    // Navigate to main app for demo purposes
+    router.push('./(tabs)');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Top Progress Bars */}
-      <View style={styles.progressContainer}>
-        {[0, 1, 2].map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.bar,
-              { backgroundColor: index <= currentIndex ? '#00672b' : '#cceeda' },
-            ]}
+      <View style={styles.imageContainer}>
+        <ScrollView
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onMomentumScrollEnd={handleScroll}
+        >
+          {onboardingData.map((item) => (
+            <Image key={item.id} source={{ uri: item.image }} style={styles.image} />
+          ))}
+        </ScrollView>
+        
+        <ProgressBar 
+          current={currentIndex + 1} 
+          total={onboardingData.length}
+          style={styles.progressBar}
+        />
+      </View>
+
+      <View style={styles.contentContainer}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Welcome to Craaving</Text>
+          <Text style={styles.subtitle}>
+            Discover amazing food, sell your creations, or deliver meals to earn money.
+          </Text>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <CustomButton
+            title="Create Account"
+            onPress={handleCreateAccount}
+            fullWidth
+            style={styles.createButton}
           />
-        ))}
-      </View>
-<View style={{height: height * 0.7, backgroundColor:"none" }}>
-      {/* Swipeable Images */}
-      <View style={{ height: height * scale(0.4), backgroundColor: "none"  , marginBottom:scale(1)}}>
+          
+          <CustomButton
+            title="Login"
+            onPress={handleLogin}
+            variant="outline"
+            fullWidth
+            style={styles.loginButton}
+          />
+        </View>
 
-        <FlatList 
-        ref={flatListRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        data={images}
-        onScroll={onScroll}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={({ item }) => (
-          <Image source={item} style={styles.image} resizeMode="cover" />
-        )}
-      />
-
-      </View>
-      
-
-      <View style={{ height: height * scale(0.15),backgroundColor:"none" , marginTop: scale(10)}}> 
-        <Text style={{ textAlign: 'center', fontFamily: 'EduNSWACTFoundation_700Bold', fontSize: scale(24)
-,}}>
-          {descriptions[currentIndex]}
-         
-          {/* Find Your New <Text style={{color:"#00ac47"}}>Favorite Food</Text> Spot! */}
+        <Text style={styles.termsText}>
+          By continuing, you agree to our{' '}
+          <Text style={styles.termsLink}>Terms of Service</Text> and{' '}
+          <Text style={styles.termsLink}>Privacy Policy</Text>
         </Text>
-         <Text style={{ textAlign: 'center', fontFamily: 'EduNSWACTFoundation_400Regular', fontSize: 16, marginTop: 10, paddingHorizontal: 20, marginBottom: 20 }}>
-          {subdescriptions[currentIndex]}
-          {/* From Popular Eateries To Hidden Gems */}
-        </Text>
-       
       </View>
-
-
-</View>
-
-      {/* Bottom Buttons */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}  onPress={() => goTo("signup")}>Create an account</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.outlined]}>
-          <Text style={[styles.buttonText, { color: '#00ac47' }]} > Log into an existing account</Text>
-        </TouchableOpacity>
-        <Text style={{ fontFamily: 'EduNSWACTFoundation_400Regular', fontSize: scale(14), color: '#666' , alignItems: 'center', marginTop: 0, textAlign: 'center'}}>
-          By continuing, you agree to our <Text style={{color:"#00ac47"}}>Terms and conditions</Text> of Services.
-        </Text>
-
-      </View>
-
-
-      {/* Footer */}
-      {/* <View style={{ alignItems: 'center', marginBottom: 0 }}>
-        <Text style={{ fontFamily: 'EduNSWACTFoundation_400Regular', fontSize: 14, color: '#666' }}>
-          By continuing, you agree to our Terms of Service and Privacy Policy.
-        </Text>
-      </View> */}
     </SafeAreaView>
   );
-};
-
-export default Login;
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.white,
   },
-  progressContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 30,
-    gap: 10,
+  imageContainer: {
+    flex: 0.6,
+    position: 'relative',
   },
-  bar: {
-    width: scale(80),
-    height: 5,
-    borderRadius: 3,
-  },
-
   image: {
     width: width,
-    height: scale(300), // or adjust based on your design
-    borderRadius: scale(50),
-    borderColor: "#ffffff",
-    borderWidth: scale(20),
-    borderBottomWidth: 0,
-    marginTop: scale(20),
-},
-
-
-  buttonContainer: {
-    paddingHorizontal: 20,
-    marginTop: 'auto',
-    marginBottom: scale(40),
+    height: '100%',
+    resizeMode: 'cover',
   },
-  button: {
-    backgroundColor: '#00ac47',
-    paddingVertical: 9,
-    borderRadius: 27,
-    marginBottom: 15,
+  progressBar: {
+    position: 'absolute',
+    bottom: verticalScale(20),
+    left: 0,
+    right: 0,
+  },
+  contentContainer: {
+    flex: 0.4,
+    paddingHorizontal: scale(20),
+    paddingTop: verticalScale(32),
+    justifyContent: 'space-between',
+  },
+  header: {
     alignItems: 'center',
   },
-  outlined: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#00ac47',
-  },
-  buttonText: {
-    // fontFamily: 'EduNSWACTFoundation_700Bold',
-    fontFamily: 'InterTight_400Regular',
-    color: '#fff',
-    fontSize: scale(17),
-    
-  },
-  heading: {
+  title: {
+    fontSize: scale(28),
+    fontFamily: Fonts.inter.bold,
+    color: Colors.text,
+    marginBottom: verticalScale(12),
     textAlign: 'center',
-    // fontFamily: 'EduNSWACTFoundation_700Bold',
-    fontFamily: 'InterTight_400Regular',
-    fontSize: scale(24),
-    marginHorizontal: 20,
-    
   },
-  highlight: {
-    color: '#00ac47',
+  subtitle: {
+    fontSize: scale(16),
+    fontFamily: Fonts.inter.regular,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: scale(24),
   },
-
+  buttonContainer: {
+    gap: verticalScale(12),
+    marginVertical: verticalScale(24),
+  },
+  createButton: {
+    marginBottom: verticalScale(4),
+  },
+  loginButton: {
+    marginBottom: verticalScale(4),
+  },
+  termsText: {
+    fontSize: scale(12),
+    fontFamily: Fonts.inter.regular,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: scale(18),
+  },
+  termsLink: {
+    color: Colors.primary,
+    fontFamily: Fonts.inter.medium,
+  },
 });
