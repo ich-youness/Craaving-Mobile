@@ -7,26 +7,31 @@ import { scale } from 'react-native-size-matters';
 export default function TabLayout() {
   return (
     <Tabs
-      screenOptions={{
-        headerShown: false,
-        
-        tabBarActiveTintColor: Colors.primary,
-        tabBarInactiveTintColor: Colors.textSecondary,
-        tabBarStyle: {
-          backgroundColor: Colors.white,
-          borderTopColor: Colors.borderLight,
-          borderTopWidth: 1,
-          height: scale(60),
-          paddingBottom: scale(8),
-          paddingTop: scale(8),
-          // marginBottom: scale(15), instead of marginBottom, hide the phone's buttons(home, back...)
-          
-        },
-        tabBarLabelStyle: {
-          fontSize: scale(12),
-          fontFamily: Fonts.inter.medium,
-        },
-      }}
+     screenOptions={{
+    headerShown: false,
+    tabBarActiveTintColor: Colors.primary,
+    tabBarInactiveTintColor: Colors.textSecondary,
+    tabBarStyle: {
+      backgroundColor: Colors.white,
+      borderTopColor: Colors.borderLight,
+      borderTopWidth: 1,
+      height: scale(80),
+      // Remove paddingBottom and paddingTop if present:
+      paddingBottom: scale(25),
+
+      // paddingTop: scale(8),
+      position: 'absolute', // <-- Overlay on top of system bar
+      left: 0,
+      right: 0,
+      bottom: 0,
+      elevation: 10, // for Android shadow
+      zIndex: 100,
+    },
+    tabBarLabelStyle: {
+      fontSize: scale(12),
+      fontFamily: Fonts.inter.medium,
+    },
+  }}
     >
       <Tabs.Screen
         name="index"

@@ -1,13 +1,15 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Search, Bell, MapPin, Star, Clock, DollarSign, Pizza, ShoppingCart, UserRound, ChevronDown, Percent, Truck, Stamp, Award, CreditCard, Funnel, ChevronLeft, ChevronRight, Flame, Gift } from 'lucide-react-native';
+import { Search, Bell, MapPin, Star, Clock, DollarSign, Pizza, ShoppingCart, UserRound, ChevronDown, Percent, Truck, Stamp, Award, CreditCard, Funnel, ChevronLeft, ChevronRight, Flame, Gift, ChefHat } from 'lucide-react-native';
 import CustomButton from '@/components/CustomButton';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
 import { scale, verticalScale } from 'react-native-size-matters';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as SystemUI from 'expo-system-ui';
+
 
 
 const featuredSpots = [
@@ -225,6 +227,8 @@ const allCuisines = [
   },
   
 ];
+
+
 export default function HomeScreen() {
 const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
@@ -472,7 +476,7 @@ const brandsScrollRef = useRef<ScrollView>(null);
           {/* Quick Order */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Quick Order <Clock   size={20} color={'#eab308'} /></Text>
+            <Text style={styles.sectionTitle}  >Quick Order <Clock   size={20} color={'#eab308'} /></Text>
             {/* <TouchableOpacity>
               <Text style={styles.seeAllText}>See all</Text>
             </TouchableOpacity> */}
@@ -485,7 +489,7 @@ const brandsScrollRef = useRef<ScrollView>(null);
 >
   {Quickorder.map((spot, idx) => (
     <TouchableOpacity key={spot.id} style={styles.spotCard2}>
-      <View style={styles.dealImageWrapper}>
+      <View style={styles.dealImageWrapper2}>
         <Image source={spot.image} style={styles.dealImage} />
         <View
           style={[
@@ -495,7 +499,7 @@ const brandsScrollRef = useRef<ScrollView>(null);
         />
       </View>
       <View style={styles.spotInfo2}>
-        <Text style={styles.spotName2}>{spot.name}</Text>
+        <Text style={styles.spotName2} numberOfLines={1}  ellipsizeMode="tail">{spot.name}</Text>
         
         <View style={styles.spotMeta2}>
           {/* <View style={styles.metaItem}>
@@ -520,11 +524,20 @@ const brandsScrollRef = useRef<ScrollView>(null);
         {/* Special offers */}
         <View style={styles.section}>
   <View style={styles.sectionHeader}>
-    <Text style={styles.sectionTitle}>Special Offers</Text>
+    <Text style={styles.sectionTitle}><Percent size={scale(20)} color={'green'} />Special Offers</Text>
+    
     <TouchableOpacity>
       <Text style={styles.seeAllText}><ChevronRight  /></Text>
     </TouchableOpacity>
+    
   </View>
+  <View style={styles.sectionHeader}>
+     <Text style={styles.sectionSubtitle}>
+        Don't miss these amazing deals
+      </Text>
+
+  </View>
+       
   <ScrollView
     horizontal
     showsHorizontalScrollIndicator={false}
@@ -568,10 +581,17 @@ const brandsScrollRef = useRef<ScrollView>(null);
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Featured Restaurants <Star  size={scale(16)} color={'#eab308'} /></Text>
+           
             {/* <TouchableOpacity>
               <Text style={styles.seeAllText}>See all</Text>
             </TouchableOpacity> */}
           </View>
+             <View style={styles.sectionHeader}>
+     <Text style={styles.sectionSubtitle}>
+        Top-rated restaurants just for you
+      </Text>
+
+  </View>
           
           <ScrollView 
             horizontal 
@@ -623,7 +643,7 @@ const brandsScrollRef = useRef<ScrollView>(null);
   <View style={styles.sectionHeaderAllCuisines}>
     <View>
       <Text style={styles.sectionTitle}>
-        All Cuisines <Text style={{fontSize: scale(18)}}>🍲</Text>
+         All Cuisines <Text style={{fontSize: scale(18)}}><ChefHat size={scale(18)} color={'#ea580c'} /></Text>{/*🍲 */}
       </Text>
       <Text style={styles.sectionSubtitle}>
         Discover restaurants and cuisines near you
@@ -641,7 +661,7 @@ const brandsScrollRef = useRef<ScrollView>(null);
           </View>
         )}
         <View style={styles.deliveryTimeBadgeCuisine}>
-          <Text style={styles.deliveryTimeTextCuisine}>{item.deliveryTime}</Text>
+          <Text style={styles.deliveryTimeTextCuisine}> <Clock size={scale(12)} color={'white'}/> {item.deliveryTime}</Text>
         </View>
         {/* Carousel dots (optional, static for now) */}
         <View style={styles.carouselDots}>
@@ -652,17 +672,25 @@ const brandsScrollRef = useRef<ScrollView>(null);
       </View>
       {/* Info Section */}
       <View style={styles.cuisineInfo}>
-        <Text style={styles.cuisineName}>{item.name}</Text>
-        <Text style={styles.cuisineSubtitle}>{item.cuisine}</Text>
-        <View style={styles.cuisineDistanceRow}>
-          <MapPin size={scale(14)} color="#ea580c" />
-          <Text style={styles.cuisineDistanceText}>{item.distance}</Text>
-        </View>
-        <View style={styles.cuisineBottomRow}>
-          <View style={styles.cuisineRating}>
+        {/* flex */}
+        <View style={{flexDirection: 'row', justifyContent:'space-between' ,alignItems: 'center', gap: scale(8)}}>
+          <Text style={styles.cuisineName}>{item.name}</Text>
+        <View style={styles.cuisineRating}>
             <Star size={scale(14)} color="#facc15" fill="#facc15" />
             <Text style={styles.cuisineRatingText}>{item.rating}</Text>
           </View>
+
+
+        </View>
+        
+
+        <Text style={styles.cuisineSubtitle}>{item.cuisine}</Text>
+        <View style={styles.cuisineDistanceRow}>
+          <MapPin size={scale(14)} color= {'#64748b'} />
+          <Text style={styles.cuisineDistanceText}>{item.distance}</Text>
+        </View>
+        <View style={styles.cuisineBottomRow}>
+          
           <Text style={styles.cuisinePrice}>{item.price}</Text>
           <TouchableOpacity style={styles.cuisineAddBtn}>
             <Text style={styles.cuisineAddBtnText}>+ Add</Text>
@@ -875,7 +903,7 @@ fadeRight: {
   },
   quickActions: {
     paddingHorizontal: scale(20),
-    marginBottom: verticalScale(32),
+    marginBottom: verticalScale(10),
   },
   actionButtons: {
     flexDirection: 'row',
@@ -893,14 +921,21 @@ fadeRight: {
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: scale(20),
-    marginBottom: verticalScale(16),
+    marginBottom: verticalScale(5),//// hada today's deals
+  },
+    sectionHeader2: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: scale(20),
+    marginBottom: verticalScale(5),//// hada today's deals
   },
     sectionHeaderPopuBrands: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     // paddingHorizontal: scale(20),
-    marginBottom: verticalScale(16),
+    marginBottom: verticalScale(0),
   },
   sectionTitle: {
     fontSize: Fonts.size.title,
@@ -911,7 +946,7 @@ fadeRight: {
   flexDirection: 'row',
   alignItems: 'center',
   paddingVertical: scale(8),
-  gap: scale(16),
+  gap: scale(5),
   paddingLeft: scale(4),
 },
 brandItem: {
@@ -1104,9 +1139,19 @@ spotCard1: {
 
   ///////////////////////
 
-  
+  dealImageWrapper2: {
+  width: '100%',
+  height: scale(80),
+  position: 'relative',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderTopLeftRadius: scale(12),
+  borderTopRightRadius: scale(12),
+  overflow: 'hidden',
+},
 spotCard2: {
-  width: wp(35),
+  width: wp(28),
+  
   backgroundColor: Colors.white,
   borderRadius: scale(12),
   overflow: 'hidden',
@@ -1125,10 +1170,10 @@ spotCard2: {
     resizeMode: 'cover',
   },
   spotInfo2: {
-    padding: scale(16),
+    padding: scale(12),
   },
   spotName2: {
-    fontSize: scale(16),
+    fontSize: scale(12),
     fontFamily: Fonts.inter.semiBold,
     color: Colors.text,
     marginBottom: verticalScale(4),
@@ -1280,6 +1325,12 @@ sectionSubtitle: {
   fontFamily: Fonts.inter.regular,
   marginTop: scale(2),
 },
+sectionSubtitle2: {
+  fontSize: scale(13),
+  color: '#64748b',
+  fontFamily: Fonts.inter.regular,
+  marginTop: scale(2),
+},
 cuisineCard: {
   backgroundColor: Colors.white,
   borderRadius: scale(12),
@@ -1295,7 +1346,7 @@ cuisineCard: {
 cuisineImageWrapper: {
   position: 'relative',
   width: '100%',
-  height: scale(140),
+  height: scale(240),
   overflow: 'hidden',
   borderTopLeftRadius: scale(12),
   borderTopRightRadius: scale(12),
@@ -1310,7 +1361,7 @@ promotedBadgeCuisine: {
   top: scale(10),
   left: scale(10),
   backgroundColor: '#f97316',
-  borderRadius: scale(12),
+  borderRadius: scale(5),
   paddingHorizontal: scale(10),
   paddingVertical: scale(2),
   zIndex: 2,
@@ -1325,7 +1376,7 @@ deliveryTimeBadgeCuisine: {
   top: scale(10),
   right: scale(10),
   backgroundColor: '#22c55e',
-  borderRadius: scale(12),
+  borderRadius: scale(5),
   paddingHorizontal: scale(10),
   paddingVertical: scale(2),
   zIndex: 2,
@@ -1380,7 +1431,7 @@ cuisineDistanceRow: {
 },
 cuisineDistanceText: {
   fontSize: scale(12),
-  color: '#ea580c',
+  color: '#64748b',
   fontFamily: Fonts.inter.medium,
   marginLeft: scale(2),
 },
@@ -1404,7 +1455,7 @@ cuisineRatingText: {
 },
 cuisinePrice: {
   fontSize: scale(14),
-  color: '#ea580c',
+  color: 'black',
   fontFamily: Fonts.inter.bold,
 },
 cuisineAddBtn: {
