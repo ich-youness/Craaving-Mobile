@@ -19,6 +19,9 @@ export default function SignUpScreen() {
   const [pendingVerification, setPendingVerification] = React.useState(false)
   const [code, setCode] = React.useState('')
 
+const [error, setError] = React.useState('')
+
+
   // Handle submission of sign-up form
   const onSignUpPress = async () => {
     if (!isLoaded) return
@@ -69,12 +72,21 @@ export default function SignUpScreen() {
       console.error(JSON.stringify(err, null, 2))
     }
   }
-
+///////////////////// hadi pour la verification, a mettre a jour apres!!!
   if (pendingVerification) {
     return (
       <>
 
         <Text>Verify your email</Text>
+        {error ? (
+          <View >
+            {/* <Ionicons name="alert-circle" size={20} color={COLORS.expense} /> */}
+            <Text >{error}</Text>
+            <TouchableOpacity onPress={() => setError("")}>
+              {/* <Ionicons name="close" size={20} color={COLORS.textLight} /> */}
+            </TouchableOpacity>
+          </View>
+        ) : null}
         <TextInput
           value={code}
           placeholder="Enter your verification code"
@@ -87,10 +99,12 @@ export default function SignUpScreen() {
     )
   }
 
+  /////////// ca c'est pour le sign up page
   return (
 
-    <View>
-      <>    <SafeAreaView style={styles.container}>
+    // <View>
+    //   <>    
+      <SafeAreaView style={styles.container}>
       
         {/* Top Section */}
         <View style={styles.topSection}>
@@ -112,18 +126,35 @@ export default function SignUpScreen() {
       
             <View style={styles.inputContainer}>
               <Icon name="email" size={22} color="#888" style={styles.inputIcon} />
-              <TextInput placeholder="Email address" placeholderTextColor="#888" style={styles.input} />
+              <TextInput placeholder="Enter email" placeholderTextColor="#888" style={styles.input} value={emailAddress} onChangeText={(email) => setEmailAddress(email)}/>
             </View>
-      
-            <TouchableOpacity>
-              <Text style={styles.switchMethodText}>Use Phone Number Instead</Text>
+
+             <View style={styles.inputContainer}>
+              <Icon name="password" size={22} color="#888" style={styles.inputIcon} />
+              <TextInput value={password}
+          placeholder="Enter password"
+          secureTextEntry={true}
+          onChangeText={(password) => setPassword(password)} placeholderTextColor="#888" style={styles.input} />
+            </View>
+             {error ? (
+          <View >
+            {/* <Ionicons name="alert-circle" size={20} color={COLORS.expense} /> */}
+            <Text >{error}</Text>
+            <TouchableOpacity onPress={() => setError("")}>
+              {/* <Ionicons name="close" size={20} color={COLORS.textLight} /> */}
             </TouchableOpacity>
+          </View>
+        ) : null}
+            {/* //maybe to be configured later */}
+            {/* <TouchableOpacity>
+              <Text style={styles.switchMethodText}>Use Phone Number Instead</Text>
+            </TouchableOpacity> */}
           </View>
         </View>
       
         {/* Bottom Section */}
         <View style={styles.bottomSection}>
-          <TouchableOpacity style={styles.primaryButton} onPress={() => router.replace('/location')}>
+         <TouchableOpacity style={styles.primaryButton } onPress={onSignUpPress}> {/*    onPress={() => router.replace('/location')} */}
             <Text style={styles.primaryButtonText}>Create an account</Text>
           </TouchableOpacity>
       
@@ -149,31 +180,13 @@ export default function SignUpScreen() {
         </View>
       
       </SafeAreaView>
-        <Text>Sign up</Text>
-        <TextInput
-          autoCapitalize="none"
-          value={emailAddress}
-          placeholder="Enter email"
-          onChangeText={(email) => setEmailAddress(email)}
-        />
-        <TextInput
-          value={password}
-          placeholder="Enter password"
-          secureTextEntry={true}
-          onChangeText={(password) => setPassword(password)}
-        />
-        <TouchableOpacity onPress={onSignUpPress}>
-          <Text>Continue</Text>
-        </TouchableOpacity>
-        <View style={{ display: 'flex', flexDirection: 'row', gap: 3 }}>
-          <Text>Already have an account?</Text>
-          <Link href="/sign-in">
-            <Text>Sign in</Text>
-          </Link>
-        </View>
-      </>
-    </View>
   )
+        
+
+
+    //   </>
+    // </View>
+        
 }
 
 const styles = StyleSheet.create({
@@ -355,3 +368,26 @@ socialButton: {
   },
 });
           
+
+{/* <Text>Sign up</Text>
+        <TextInput
+          autoCapitalize="none"
+          value={emailAddress}
+          placeholder="Enter email"
+          onChangeText={(email) => setEmailAddress(email)}
+        />
+        <TextInput
+          value={password}
+          placeholder="Enter password"
+          secureTextEntry={true}
+          onChangeText={(password) => setPassword(password)}
+        />
+        <TouchableOpacity onPress={onSignUpPress}>
+          <Text>Continue</Text>
+        </TouchableOpacity>
+        <View style={{ display: 'flex', flexDirection: 'row', gap: 3 }}>
+          <Text>Already have an account?</Text>
+          <Link href="/sign-in">
+            <Text>Sign in</Text>
+          </Link>
+        </View> */}

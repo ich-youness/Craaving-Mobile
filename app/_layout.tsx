@@ -62,6 +62,8 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="+not-found" />
         <Stack.Screen name="(auth)"/>
+        {/* <Stack.Screen name="(auth)/sign-up"/>
+        <Stack.Screen name="sign-up"/> */}
       </Stack>
       <StatusBar style="light" />
       </ClerkProvider>
