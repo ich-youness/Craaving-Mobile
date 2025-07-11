@@ -11,6 +11,7 @@ import { scale } from 'react-native-size-matters';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Lock } from 'lucide-react-native';
+import { Fonts } from '@/constants/Fonts';
 
 
 export default function SignUpScreen() {
@@ -26,6 +27,27 @@ export default function SignUpScreen() {
 const [error, setError] = React.useState('')
 const inputRefs = React.useRef<Array<TextInput | null>>([]);
 
+  const handleOtpChange = (digit: string, index: number) => {
+    const newCode = code.split('');
+    newCode[index] = digit;
+    setCode(newCode.join(''));
+
+    // Auto-move to next input
+    if (digit && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+
+    // Auto-submit when last digit entered
+    if (digit && index === 5) {
+      inputRefs.current[index]?.blur();
+    }
+  };
+
+  const handleOtpKeyPress = (nativeEvent: any, index: number) => {
+    if (nativeEvent.key === 'Backspace' && !code[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
 
 
   // Handle submission of sign-up form
@@ -66,7 +88,7 @@ const inputRefs = React.useRef<Array<TextInput | null>>([]);
       // and redirect the user
       if (signUpAttempt.status === 'complete') {
         await setActive({ session: signUpAttempt.createdSessionId })
-        router.replace('/')
+        router.replace('../(tabs)')
       } else {
         // If the status is not complete, check why. User may need to
         // complete further steps.
@@ -136,31 +158,14 @@ if (pendingVerification) {
   {[0, 1, 2, 3, 4, 5].map((_, index) => (
     <TextInput
       key={index}
-      // ref={(ref) => (inputRefs.current[index] = ref)}
+      ref={(ref) => (inputRefs.current[index] = ref)}
       style={styles.otpInput}
       maxLength={1}
       keyboardType="number-pad"
       value={code[index] || ''}
-      onChangeText={(digit) => {
-        const newCode = code.split('');
-        newCode[index] = digit;
-        setCode(newCode.join(''));
-
-        // Auto-move to next input
-        if (digit && index < 5) {
-          inputRefs.current[index + 1]?.focus();
-        }
-
-        // Optional: Auto-submit when last digit entered
-        if (digit && index === 5) {
-          inputRefs.current[index]?.blur(); // dismiss keyboard
-        }
-      }}
-      onKeyPress={({ nativeEvent }) => {
-        if (nativeEvent.key === 'Backspace' && !code[index] && index > 0) {
-          inputRefs.current[index - 1]?.focus();
-        }
-      }}
+      onChangeText={(digit) => handleOtpChange(digit, index)}
+      onKeyPress={({ nativeEvent }) => handleOtpKeyPress(nativeEvent, index)}
+      autoFocus={index === 0}
     />
   ))}
 </View>
@@ -350,7 +355,7 @@ socialButton: {
   backText: {
     color: '#008A39',
     fontSize: scale(16),
-    fontWeight: '500',
+    fontFamily: Fonts.outfit.regular,
     marginLeft: scale(5),
   },
   logoContainer: {
@@ -367,7 +372,7 @@ socialButton: {
   },
   logoText: {
     fontSize: scale(24),
-    fontWeight: '500',
+    fontFamily: Fonts.outfit.bold,
     color: '#008A39',
   },
   textContainer: {
@@ -376,13 +381,14 @@ socialButton: {
   },
   title: {
     fontSize: scale(24),
-    fontWeight: '500',
+    fontFamily: Fonts.outfit.bold,
     color: '#008A39',
     textAlign: 'center',
     marginBottom: scale(8),
   },
   subtitle: {
     fontSize: scale(14),
+    fontFamily: Fonts.outfit.regular,
     color: '#666',
     textAlign: 'center',
     marginBottom: scale(16),
@@ -404,14 +410,15 @@ socialButton: {
     flex: 1,
     height: '100%',
     fontSize: scale(14),
+    fontFamily: Fonts.outfit.regular,
   },
   switchMethod: {
     marginTop: scale(12),
   },
   switchMethodText: {
     fontSize: scale(12),
+    fontFamily: Fonts.outfit.regular,
     color: '#797979d8',
-    fontFamily: 'InterTight_400Regular',
   },
   actionContainer: {
     marginTop: scale(20),
@@ -425,8 +432,8 @@ socialButton: {
   // },
   primaryButtonText: {
     fontSize: scale(16),
+    fontFamily: Fonts.outfit.bold,
     color: '#fff',
-    fontFamily: 'InterTight_400Regular',
   },
   dividerContainer: {
     flexDirection: 'row',
@@ -442,6 +449,7 @@ socialButton: {
     marginHorizontal: 10,
     color: '#888',
     fontSize: scale(14),
+    fontFamily: Fonts.outfit.regular,
   },
   socialContainer: {
     alignItems: 'center',
@@ -461,10 +469,12 @@ socialButton: {
   // },
   socialButtonText: {
     fontSize: scale(15),
+    fontFamily: Fonts.outfit.regular,
     color: '#333',
   },
   termsText: {
     fontSize: scale(12),
+    fontFamily: Fonts.outfit.regular,
     color: '#797979d8',
     textAlign: 'center',
     marginTop: scale(20),
@@ -482,16 +492,18 @@ otpInput: {
   width: scale(45),
   height: scale(45),
   borderRadius: 10,
-  backgroundColor: '#E0F2F1',
+  backgroundColor: '#f8f9fa',
   textAlign: 'center',
-  fontSize: scale(20),
+  fontSize: scale(15),
+  fontFamily: Fonts.outfit.bold,
   color: '#333',
-  borderWidth: 1,
-  borderColor: '#ccc',
+  borderWidth: 2,
+  borderColor: '#e9ecef',
   marginHorizontal:scale(1),
 },
 resendText: {
   fontSize: scale(12),
+  fontFamily: Fonts.outfit.regular,
   color: '#797979',
   marginTop: scale(10),
 },

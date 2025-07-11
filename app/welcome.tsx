@@ -263,8 +263,12 @@ const [currentIndex, setCurrentIndex] = useState(0);
 // };
   const goTo = (screen: string) => {
     setTimeout(() => {
-      
-      router.replace('/getStarted');
+      if(screen == "sign-up"){
+      router.replace('/(auth)/sign-up');
+      }
+      else{
+        router.replace('/(auth)/sign-in')
+      }
     }, 10);
   };
 
@@ -379,10 +383,10 @@ const subdescriptions = [
       {/* Bottom Buttons */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}  onPress={() => goTo("signup")}>Create an account</Text>
+          <Text style={styles.buttonText}  onPress={() => goTo("sign-up")}>Create an account</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.button, styles.outlined]}>
-          <Text style={[styles.buttonText, { color: '#00ac47' }]} > Log into an existing account</Text>
+          <Text style={[styles.buttonText, { color: '#00ac47' }]}  onPress={() => goTo("sign-in")} > Log into an existing account</Text>
         </TouchableOpacity>
         <Text style={{ fontFamily: 'Outfit_400Regular', fontSize: scale(14), color: '#666' , alignItems: 'center', marginTop: 0, textAlign: 'center'}}>
           By continuing, you agree to our <Text style={{color:"#00ac47"}}>Terms and conditions</Text> of Services.

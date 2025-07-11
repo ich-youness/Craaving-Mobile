@@ -1,20 +1,32 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
 import { scale, verticalScale } from 'react-native-size-matters';
+import { useAuth } from '@clerk/clerk-expo';
 
 export default function SplashScreen() {
   const router = useRouter();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      router.replace('/(auth)/sign-up');
-    }, 2000); 
+  const { isSignedIn, isLoaded } = useAuth();
 
-    return () => clearTimeout(timer);
-  }, []);
+ 
+
+useEffect(() => {
+  if (!isLoaded) return; // wait until Clerk is ready
+
+  const timer = setTimeout(() => {
+    if (isSignedIn) {
+      router.replace('/(tabs)');
+    } else {
+      router.replace('/welcome');
+    }
+  }, 3000);
+
+  return () => clearTimeout(timer);
+}, [isLoaded, isSignedIn]);
+
 
   return (
     <View style={styles.container}>
