@@ -1,7 +1,8 @@
-import * as React from 'react'
+import * as React  from 'react'
+
 import { useSignUp } from '@clerk/clerk-expo'
 import { Link, useRouter } from 'expo-router'
-import { View, Text, TouchableOpacity, Image, Dimensions, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Dimensions, TextInput , Animated } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native';
@@ -9,10 +10,13 @@ import { router } from 'expo-router';
 import { scale } from 'react-native-size-matters';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Lock } from 'lucide-react-native';
+
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp()
   const router = useRouter()
+
 
   const [emailAddress, setEmailAddress] = React.useState('')
   const [password, setPassword] = React.useState('')
@@ -20,6 +24,8 @@ export default function SignUpScreen() {
   const [code, setCode] = React.useState('')
 
 const [error, setError] = React.useState('')
+const inputRefs = React.useRef<Array<TextInput | null>>([]);
+
 
 
   // Handle submission of sign-up form
@@ -73,31 +79,110 @@ const [error, setError] = React.useState('')
     }
   }
 ///////////////////// hadi pour la verification, a mettre a jour apres!!!
-  if (pendingVerification) {
-    return (
-      <>
+//   if (pendingVerification) {
+//     return (
+//       <SafeAreaView style={styles.container}>
+// <View>
+//         <Text>Verify your email</Text>
+//         {error ? (
+//           <View >
+//             {/* <Ionicons name="alert-circle" size={20} color={COLORS.expense} /> */}
+//             <Text >{error}</Text>
+//             <TouchableOpacity onPress={() => setError("")}>
+//               {/* <Ionicons name="close" size={20} color={COLORS.textLight} /> */}
+//             </TouchableOpacity>
+//           </View>
+//         ) : null}
+//         <TextInput
+//           value={code}
+//           placeholder="Enter your verification code"
+//           onChangeText={(code) => setCode(code)}
+//         />
+//         <TouchableOpacity onPress={onVerifyPress}>
+//           <Text>Verify</Text>
+//         </TouchableOpacity>
+//         </View>
+//       </SafeAreaView>
+//     )
+//   }
+if (pendingVerification) {
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.topSection}>
+        {/* Nav Bar */}
+        <View style={styles.navBar}>
+          <TouchableOpacity style={styles.backButton} onPress={() => setPendingVerification(false)}>
+            <Icon1 name="arrow-back-ios" size={20} color="#008A39" />
+            <Text style={styles.backText}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
 
-        <Text>Verify your email</Text>
-        {error ? (
-          <View >
-            {/* <Ionicons name="alert-circle" size={20} color={COLORS.expense} /> */}
-            <Text >{error}</Text>
-            <TouchableOpacity onPress={() => setError("")}>
-              {/* <Ionicons name="close" size={20} color={COLORS.textLight} /> */}
-            </TouchableOpacity>
-          </View>
-        ) : null}
-        <TextInput
-          value={code}
-          placeholder="Enter your verification code"
-          onChangeText={(code) => setCode(code)}
-        />
-        <TouchableOpacity onPress={onVerifyPress}>
-          <Text>Verify</Text>
+        {/* Logo */}
+        <View style={styles.logoContainer}>
+          <Image source={require('../../assets/images/logo2.png')} style={styles.logo} />
+          <Text style={styles.logoText}>Craaving</Text>
+        </View>
+
+        {/* Text */}
+        <View style={styles.textBlock}>
+          <Text style={styles.title}>Verification Process</Text>
+          <Text style={styles.subtitle}>
+            Kindly input the 6-digit code sent to your email address to continue
+          </Text>
+
+          {/* OTP Input */}
+{/* OTP Input */}
+<View style={styles.otpContainer}>
+  {[0, 1, 2, 3, 4, 5].map((_, index) => (
+    <TextInput
+      key={index}
+      // ref={(ref) => (inputRefs.current[index] = ref)}
+      style={styles.otpInput}
+      maxLength={1}
+      keyboardType="number-pad"
+      value={code[index] || ''}
+      onChangeText={(digit) => {
+        const newCode = code.split('');
+        newCode[index] = digit;
+        setCode(newCode.join(''));
+
+        // Auto-move to next input
+        if (digit && index < 5) {
+          inputRefs.current[index + 1]?.focus();
+        }
+
+        // Optional: Auto-submit when last digit entered
+        if (digit && index === 5) {
+          inputRefs.current[index]?.blur(); // dismiss keyboard
+        }
+      }}
+      onKeyPress={({ nativeEvent }) => {
+        if (nativeEvent.key === 'Backspace' && !code[index] && index > 0) {
+          inputRefs.current[index - 1]?.focus();
+        }
+      }}
+    />
+  ))}
+</View>
+
+
+          {error ? (
+            <Text style={{ color: '#d32f2f', fontSize: scale(12), marginTop: scale(10) }}>{error}</Text>
+          ) : null}
+        </View>
+      </View>
+
+      {/* Bottom Section */}
+      <View style={styles.bottomSection}>
+        <TouchableOpacity style={styles.primaryButton} onPress={onVerifyPress}>
+          <Text style={styles.primaryButtonText}>Continue</Text>
         </TouchableOpacity>
-      </>
-    )
-  }
+
+        <Text style={styles.resendText}>Didn’t receive the code? Resend in 45s</Text>
+      </View>
+    </SafeAreaView>
+  );
+}
 
   /////////// ca c'est pour le sign up page
   return (
@@ -116,7 +201,7 @@ const [error, setError] = React.useState('')
           </View>
       
           <View style={styles.logoContainer}>
-            {/* <Image source={require('../assets/images/logo2.png')} style={styles.logo} /> */}
+            <Image source={require('../../assets/images/logo2.png')} style={styles.logo} />
             <Text style={styles.logoText}>Craaving</Text>
           </View>
       
@@ -130,7 +215,7 @@ const [error, setError] = React.useState('')
             </View>
 
              <View style={styles.inputContainer}>
-              <Icon name="password" size={22} color="#888" style={styles.inputIcon} />
+              <Lock   size={22} color="#888" style={styles.inputIcon} />
               <TextInput value={password}
           placeholder="Enter password"
           secureTextEntry={true}
@@ -181,12 +266,32 @@ const [error, setError] = React.useState('')
       
       </SafeAreaView>
   )
+  
+{/* <Text>Sign up</Text>
+        <TextInput
+          autoCapitalize="none"
+          value={emailAddress}
+          placeholder="Enter email"
+          onChangeText={(email) => setEmailAddress(email)}
+        />
+        <TextInput
+          value={password}
+          placeholder="Enter password"
+          secureTextEntry={true}
+          onChangeText={(password) => setPassword(password)}
+        />
+        <TouchableOpacity onPress={onSignUpPress}>
+          <Text>Continue</Text>
+        </TouchableOpacity>
+        <View style={{ display: 'flex', flexDirection: 'row', gap: 3 }}>
+          <Text>Already have an account?</Text>
+          <Link href="/sign-in">
+            <Text>Sign in</Text>
+          </Link>
+        </View> */}
         
 
 
-    //   </>
-    // </View>
-        
 }
 
 const styles = StyleSheet.create({
@@ -366,28 +471,30 @@ socialButton: {
     maxWidth: scale(280),
     
   },
+  otpContainer: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  marginTop: scale(20),
+  width: '100%',
+  
+},
+otpInput: {
+  width: scale(45),
+  height: scale(45),
+  borderRadius: 10,
+  backgroundColor: '#E0F2F1',
+  textAlign: 'center',
+  fontSize: scale(20),
+  color: '#333',
+  borderWidth: 1,
+  borderColor: '#ccc',
+  marginHorizontal:scale(1),
+},
+resendText: {
+  fontSize: scale(12),
+  color: '#797979',
+  marginTop: scale(10),
+},
+
 });
           
-
-{/* <Text>Sign up</Text>
-        <TextInput
-          autoCapitalize="none"
-          value={emailAddress}
-          placeholder="Enter email"
-          onChangeText={(email) => setEmailAddress(email)}
-        />
-        <TextInput
-          value={password}
-          placeholder="Enter password"
-          secureTextEntry={true}
-          onChangeText={(password) => setPassword(password)}
-        />
-        <TouchableOpacity onPress={onSignUpPress}>
-          <Text>Continue</Text>
-        </TouchableOpacity>
-        <View style={{ display: 'flex', flexDirection: 'row', gap: 3 }}>
-          <Text>Already have an account?</Text>
-          <Link href="/sign-in">
-            <Text>Sign in</Text>
-          </Link>
-        </View> */}
